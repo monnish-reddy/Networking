@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TechVilla: IP Addressing & Subnetting Adventure</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .blog-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 60px 0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            margin-bottom: 40px;
+            border-radius: 20px;
+            margin-top: 20px;
+            animation: slideDown 1s ease-out;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        .author {
+            font-size: 1.2rem;
+            color: #f0f8ff;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        .subtitle {
+            font-size: 1.4rem;
+            color: #e6f3ff;
+            font-weight: 300;
+        }
+
+        .section {
+            background: white;
+            margin: 30px 0;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            opacity: 0;
+            transform: translateY(50px);
+            animation: fadeInUp 0.8s ease-out forwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            transition: left 0.5s;
+        }
+
+        .section:hover::before {
+            left: 100%;
+        }
+
+        .section h2 {
+            font-size: 2.5rem;
+            color: #2d3748;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .section h3 {
+            font-size: 1.8rem;
+            color: #4a5568;
+            margin: 25px 0 15px 0;
+            padding-left: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .concept-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            transform: scale(0.95);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .concept-card:hover {
+            transform: scale(1.02) translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+
+        .concept-card h4 {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .network-diagram {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .device {
+            display: inline-block;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 25px;
+            margin: 10px;
+            font-weight: 500;
+            transform: translateX(-50px);
+            opacity: 0;
+            animation: slideInLeft 1s ease-out forwards;
+            position: relative;
+        }
+
+        .device:nth-child(2) { animation-delay: 0.2s; }
+        .device:nth-child(3) { animation-delay: 0.4s; }
+        .device:nth-child(4) { animation-delay: 0.6s; }
+        .device:nth-child(5) { animation-delay: 0.8s; }
+
+        .ip-flow {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 20px 0;
+            padding: 20px;
+            background: linear-gradient(90deg, #ff9a9e 0%, #fecfef 100%);
+            border-radius: 15px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .ip-box {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            color: #2d3748;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .ip-box:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .arrow {
+            font-size: 2rem;
+            color: white;
+            animation: bounce 2s infinite;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin: 30px 0;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+        }
+
+        th, td {
+            padding: 15px 20px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background: #f8fafc;
+            transform: scale(1.01);
+            transition: all 0.2s ease;
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 20px 0;
+            border-left: 5px solid #ff6b6b;
+            animation: pulse 2s infinite;
+        }
+
+        .emoji {
+            font-size: 1.5rem;
+            margin-right: 10px;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                transform: translateX(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            }
+            to {
+                text-shadow: 2px 2px 20px rgba(255,255,255,0.8);
+            }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(255, 107, 107, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 107, 107, 0);
+            }
+        }
+
+        .section:nth-child(2) { animation-delay: 0.2s; }
+        .section:nth-child(3) { animation-delay: 0.4s; }
+        .section:nth-child(4) { animation-delay: 0.6s; }
+        .section:nth-child(5) { animation-delay: 0.8s; }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .section {
+                padding: 25px;
+                margin: 20px 0;
+            }
+            
+            .section h2 {
+                font-size: 2rem;
+            }
+            
+            .ip-flow {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="blog-container">
+        <header class="header">
+            <h1>🏡 TechVilla: IP Addressing Adventure</h1>
+            <p class="author">By <strong>MonnishSayireddy Peta</strong></p>
+            <p class="subtitle">A Real-World Journey Through Networking Concepts</p>
+        </header>
+
+        <section class="section">
+            <h2><span class="emoji">🧠</span>Essential Networking Concepts</h2>
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <h4><span class="emoji">🌍</span>Public IP</h4>
+                    <p>Globally unique, routable IP address assigned by ISP or cloud provider for internet access.</p>
+                </div>
+                <div class="concept-card">
+                    <h4><span class="emoji">🏠</span>Private IP</h4>
+                    <p>Internal network IPs (RFC 1918) not routable on internet: 10.x.x.x, 172.16.x.x, 192.168.x.x</p>
+                </div>
+                <div class="concept-card">
+                    <h4><span class="emoji">🔗</span>CIDR Notation</h4>
+                    <p>Defines subnet size using slash notation (e.g., /24 = 255.255.255.0 subnet mask)</p>
+                </div>
+                <div class="concept-card">
+                    <h4><span class="emoji">⚡</span>DHCP</h4>
+                    <p>Automatically assigns IP addresses, subnet masks, and gateway info to network devices</p>
+                </div>
+                <div class="concept-card">
+                    <h4><span class="emoji">🔄</span>NAT/PAT</h4>
+                    <p>Translates private IPs to public IP, with PAT adding unique ports for each device</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2><span class="emoji">🏡</span>Welcome to TechVilla Smart Home</h2>
+            <p>TechVilla is a modern smart home featuring laptops, smart TVs, security cameras, and IoT devices, all connected through a sophisticated network setup.</p>
+            
+            <h3>Step 1: ISP Assignment</h3>
+            <div class="ip-flow">
+                <div class="ip-box">ISP</div>
+                <div class="arrow">➡️</div>
+                <div class="ip-box">Public IP: 105.23.17.8</div>
+                <div class="arrow">➡️</div>
+                <div class="ip-box">Router WAN Interface</div>
+            </div>
+
+            <h3>Step 2: Private Network Creation</h3>
+            <div class="network-diagram">
+                <p><strong>Router creates private subnet: 192.168.1.0/24</strong></p>
+                <p>Router assigns itself: <strong>192.168.1.1</strong> (Gateway)</p>
+                <p>DHCP Range: <strong>192.168.1.10 – 192.168.1.200</strong></p>
+            </div>
+
+            <h3>Step 3: Device Network Assignment</h3>
+            <div class="network-diagram">
+                <div class="device">💻 Laptop: 192.168.1.10</div>
+                <div class="device">📺 Smart TV: 192.168.1.20</div>
+                <div class="device">📷 Camera: 192.168.1.30</div>
+                <div class="device">🌡️ Thermostat: 192.168.1.40</div>
+            </div>
+
+            <div class="highlight">
+                <h4><span class="emoji">🔑</span>Key Insight</h4>
+                <p>All devices use <strong>private IPs</strong> and communicate locally without NAT. The router's <strong>DHCP server</strong> automatically assigns these addresses from the configured range.</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2><span class="emoji">🌐</span>Internet Access via NAT + PAT</h2>
+            <p>Here's how devices access the internet through Network Address Translation:</p>
+
+            <div class="ip-flow">
+                <div class="ip-box">Laptop<br>192.168.1.10</div>
+                <div class="arrow">➡️</div>
+                <div class="ip-box">Router<br>NAT + PAT</div>
+                <div class="arrow">➡️</div>
+                <div class="ip-box">Internet<br>105.23.17.8:50432</div>
+            </div>
+
+            <h3>The NAT/PAT Process:</h3>
+            <ol style="font-size: 1.1rem; margin: 20px 0; padding-left: 30px;">
+                <li>Laptop requests https://google.com</li>
+                <li>Router translates private IP (192.168.1.10) to public IP (105.23.17.8)</li>
+                <li>Router assigns unique port (50432) using PAT</li>
+                <li>Google responds to 105.23.17.8:50432</li>
+                <li>Router forwards response back to 192.168.1.10</li>
+            </ol>
+
+            <div class="highlight">
+                <h4><span class="emoji">✨</span>Magic of PAT</h4>
+                <p>Multiple devices share the <strong>same public IP</strong> simultaneously! Each gets a unique port number, allowing the router to track and route responses correctly.</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2><span class="emoji">☁️</span>TechVilla's Cloud Infrastructure</h2>
+            <p>TechVilla also runs backend services in AWS with both public and private subnets:</p>
+
+            <h3>Public Subnet (AWS Allocated)</h3>
+            <div class="ip-flow">
+                <div class="ip-box">AWS Public Subnet<br>203.0.113.0/29</div>
+                <div class="arrow">➡️</div>
+                <div class="ip-box">8 IPs Total<br>6 Usable</div>
+                <div class="arrow">➡️</div>
+                <div class="ip-box">Load Balancers<br>NAT Gateways</div>
+            </div>
+
+            <h3>Private Subnet (Internal)</h3>
+            <div class="network-diagram">
+                <p><strong>Private Subnet: 10.0.0.0/24</strong></p>
+                <div class="device">🖥️ Backend Servers</div>
+                <div class="device">🗄️ Databases</div>
+                <div class="device">⚙️ Internal Services</div>
+            </div>
+
+            <h3>Subnet Connection Architecture</h3>
+            <div class="ip-flow">
+                <div class="ip-box">Private Subnet<br>10.0.0.0/24</div>
+                <div class="arrow">➡️</div>
+                <div class="ip-box">NAT Gateway<br>(Public Subnet)</div>
+                <div class="arrow">➡️</div>
+                <div class="ip-box">Internet</div>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2><span class="emoji">📊</span>Complete Concept Summary</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Concept</th>
+                            <th>Technical Definition</th>
+                            <th>TechVilla Example</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Public IP</strong></td>
+                            <td>Routable IP from ISP or cloud</td>
+                            <td>105.23.17.8 (home), 203.0.113.0/29 (AWS)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Private IP</strong></td>
+                            <td>RFC 1918 range, not internet routable</td>
+                            <td>192.168.1.x (home), 10.0.0.x (AWS)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Public Subnet</strong></td>
+                            <td>Contains global IPs, directly exposed</td>
+                            <td>AWS NAT gateway/load balancer subnet</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Private Subnet</strong></td>
+                            <td>Internal network behind NAT</td>
+                            <td>Home LAN + AWS backend services</td>
+                        </tr>
+                        <tr>
+                            <td><strong>CIDR</strong></td>
+                            <td>Defines subnet size with network bits</td>
+                            <td>/24 (256 IPs), /29 (8 IPs)</td>
+                        </tr>
+                        <tr>
+                            <td><strong>DHCP</strong></td>
+                            <td>Auto-assigns IPs to devices</td>
+                            <td>Range: 192.168.1.10–200</td>
+                        </tr>
+                        <tr>
+                            <td><strong>NAT</strong></td>
+                            <td>Translates private to public IP</td>
+                            <td>Laptop accessing Google</td>
+                        </tr>
+                        <tr>
+                            <td><strong>PAT</strong></td>
+                            <td>Assigns unique port for each device</td>
+                            <td>105.23.17.8:50432</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="section">
+            <h2><span class="emoji">🎯</span>Key Takeaways</h2>
+            <div class="highlight">
+                <h4><span class="emoji">💡</span>The Big Picture</h4>
+                <p>TechVilla demonstrates how <strong>public and private IPs interact</strong> through NAT and PAT, how <strong>subnets are built</strong> using CIDR notation, and how <strong>DHCP simplifies</strong> IP management. These concepts scale from home Wi-Fi to enterprise networks and cloud platforms like AWS.</p>
+            </div>
+
+            <div class="concept-grid">
+                <div class="concept-card">
+                    <h4><span class="emoji">🏠</span>Home Network</h4>
+                    <p>One public IP serves multiple private devices through NAT/PAT translation</p>
+                </div>
+                <div class="concept-card">
+                    <h4><span class="emoji">☁️</span>Cloud Network</h4>
+                    <p>Multiple public IPs in public subnets, private subnets for backend security</p>
+                </div>
+                <div class="concept-card">
+                    <h4><span class="emoji">🔒</span>Security</strong></h4>
+                    <p>Private subnets provide isolation, NAT provides implicit firewall protection</p>
+                </div>
+                <div class="concept-card">
+                    <h4><span class="emoji">📈</span>Scalability</h4>
+                    <p>CIDR allows flexible subnet sizing, DHCP enables automatic device onboarding</p>
+                </div>
+            </div>
+        </section>
+
+        <footer class="section" style="text-align: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+            <h2><span class="emoji">🎉</span>Thank You for Reading!</h2>
+            <p>Hope this animated journey through TechVilla helped clarify networking concepts!</p>
+            <p><strong>Written by: Monnish Sayireddy Peta</strong></p>
+            <p style="margin-top: 20px; font-size: 0.9rem; opacity: 0.8;">
+                Understanding networks is like understanding the digital highways that connect our world 🌐
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // Add scroll-triggered animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Add click interactions to concept cards
+        document.querySelectorAll('.concept-card').forEach(card => {
+            card.addEventListener('click', () => {
+                card.style.transform = 'scale(1.05) translateY(-10px)';
+                setTimeout(() => {
+                    card.style.transform = 'scale(1.02) translateY(-5px)';
+                }, 200);
+            });
+        });
+
+        // Add hover effects to IP boxes
+        document.querySelectorAll('.ip-box').forEach(box => {
+            box.addEventListener('mouseenter', () => {
+                box.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                box.style.color = 'white';
+            });
+            
+            box.addEventListener('mouseleave', () => {
+                box.style.background = 'white';
+                box.style.color = '#2d3748';
+            });
+        });
+    </script>
+</body>
+</html>
